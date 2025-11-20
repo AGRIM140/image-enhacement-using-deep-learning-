@@ -2,12 +2,19 @@ import streamlit as st
 from PIL import Image
 import yaml
 import torch
-from tools.model_runner import ModelRunner
 from pathlib import Path
 import tempfile
 import os
-from utils import metrics
+import sys
 import numpy as np
+
+# Add project root to path for Streamlit Cloud
+project_root = Path(__file__).parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
+# Now import project modules
+from tools.model_runner import ModelRunner
 
 # Page configuration
 st.set_page_config(
@@ -195,28 +202,16 @@ with col2:
                     output_image = Image.open(out_path)
                     st.image(output_image, caption="Enhanced Image", use_container_width=True)
                     
-                    # Calculate metrics if possible
-                    try:
-                        # Load images as tensors for metrics
-                        from utils.image_utils import load_image
-                        input_tensor = load_image(str(in_path), cfg)
-                        output_tensor = load_image(str(out_path), cfg)
-                        
-                        # For demonstration, we can't calculate PSNR/SSIM without ground truth
-                        # But we can show image stats
-                        st.success("✅ Image enhanced successfully!")
-                        
-                        # Image statistics
-                        with st.expander("📊 Image Statistics"):
-                            col_a, col_b = st.columns(2)
-                            with col_a:
-                                st.metric("Input Size", f"{input_image.size[0]} x {input_image.size[1]}")
-                            with col_b:
-                                st.metric("Output Size", f"{output_image.size[0]} x {output_image.size[1]}")
-                        
-                    except Exception as e:
-                        st.success("✅ Image enhanced successfully!")
-                        st.caption(f"Note: {str(e)}")
+                    # Show success and image statistics
+                    st.success("✅ Image enhanced successfully!")
+                    
+                    # Image statistics
+                    with st.expander("📊 Image Statistics"):
+                        col_a, col_b = st.columns(2)
+                        with col_a:
+                            st.metric("Input Size", f"{input_image.size[0]} x {input_image.size[1]}")
+                        with col_b:
+                            st.metric("Output Size", f"{output_image.size[0]} x {output_image.size[1]}")
                     
                     # Download button
                     with open(out_path, "rb") as file:
