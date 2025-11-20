@@ -1,0 +1,70 @@
+# Noise2Noise GAN specific configuration
+# Inherits from base_config.yaml
+
+# Model specific parameters
+model:
+  name: 'noise2noise'
+  use_attention: true
+  use_skip_connections: true
+  
+  # Generator architecture
+  generator:
+    num_channels: 64
+    num_downsample: 3
+    num_residual_blocks: 9
+    use_batch_norm: true
+    use_instance_norm: true
+    activation: 'relu'
+    
+  # Discriminator architecture
+  discriminator:
+    num_channels: 64
+    num_blocks: 4
+    use_batch_norm: true
+    use_spectral_norm: true
+    activation: 'leaky_relu'
+    patch_size: 70  # PatchGAN discriminator
+
+# Training specific parameters
+training:
+  learning_rate: 0.0002
+  beta1: 0.5
+  beta2: 0.999
+  epochs: 100
+  
+  # Optimizer settings
+  optimizer:
+    type: 'adam'
+    lr_g: 0.0002
+    lr_d: 0.0002
+    weight_decay: 0.0001
+
+# Loss weights specific to Noise2Noise
+loss_weights:
+  adversarial: 0.1
+  l1: 100.0
+  perceptual: 0.1
+  gradient_penalty: 10.0
+
+# Data specific parameters
+data:
+  degradation_type: 'noise'
+  noise_type: 'gaussian'  # or 'poisson', 'salt_pepper'
+  noise_level: 0.1  # Standard deviation for Gaussian noise
+  noise_range: [0.05, 0.15]  # Range for random noise level during training
+
+# Evaluation metrics
+metrics:
+  psnr: true
+  ssim: true
+  noise_reduction_ratio: true  # Custom metric for noise reduction
+
+# Augmentation
+augmentation:
+  use_random_crop: true
+  use_random_flip: true
+  use_color_jitter: true
+  brightness: 0.2
+  contrast: 0.2
+  saturation: 0.2
+  hue: 0.1 

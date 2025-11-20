@@ -1,0 +1,53 @@
+# Base configuration for all GAN models
+
+# Data parameters
+data:
+  root: './data'
+  batch_size: 32
+  num_workers: 2
+  pin_memory: true
+  download: true
+
+# Training parameters
+training:
+  epochs: 100
+  learning_rate: 0.0002
+  beta1: 0.9
+  beta2: 0.999
+  weight_decay: 0.0001
+  save_interval: 5  # Save model every N epochs
+  log_interval: 100  # Log metrics every N iterations
+  validation_interval: 1  # Validate every N epochs
+
+# Model parameters
+model:
+  in_channels: 3
+  out_channels: 3
+  base_channels: 64  # Base number of channels in the network
+  num_residual_blocks: 16  # Number of residual blocks in generator
+  use_attention: true  # Whether to use attention mechanism
+
+# Loss weights
+loss_weights:
+  adversarial: 0.1
+  content: 1.0
+  perceptual: 0.1
+  cycle: 10.0  # For CycleGAN
+  identity: 5.0  # For CycleGAN
+
+# Hardware
+device: 'cuda'  # or 'cpu'
+use_amp: true  # Automatic Mixed Precision
+
+# Logging
+logging:
+  log_dir: './logs'
+  tensorboard: true
+  save_dir: './checkpoints'
+  experiment_name: 'gan_experiment'
+
+# Visualization
+visualization:
+  save_dir: './results'
+  num_samples: 8  # Number of samples to visualize
+  max_images: 16  # Maximum number of images to show in grid 

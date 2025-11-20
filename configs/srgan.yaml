@@ -1,0 +1,43 @@
+model:
+  type: srgan
+  name: srgan_model
+  scale_factor: 4  # Upscaling factor
+  num_residual_blocks: 16
+  num_filters: 64
+
+data:
+  data_dir: data/srgan
+  hr_size: 256  # High-resolution image size
+  lr_size: 64   # Low-resolution image size
+  num_channels: 3
+  normalize_mean: [0.5, 0.5, 0.5]
+  normalize_std: [0.5, 0.5, 0.5]
+  num_workers: 4
+  use_color_jitter: true
+
+training:
+  batch_size: 16
+  num_epochs: 20
+  learning_rate: 0.0001
+  beta1: 0.9
+  beta2: 0.999
+  weight_decay: 1e-4
+  metric_to_monitor: psnr
+  save_interval: 5  # Save every 5 epochs
+  save_best: true   # Save best model based on validation
+  metric_for_best: psnr  # Use PSNR to determine best model
+  # Learning rate scheduler
+  lr_scheduler:
+    type: cosine
+    warmup_epochs: 5
+
+loss_weights:
+  adversarial: 1e-3
+  content: 1.0
+  perceptual: 1.0
+
+logging:
+  checkpoint_dir: checkpoints
+  log_dir: logs
+
+use_amp: true

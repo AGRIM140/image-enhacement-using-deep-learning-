@@ -1,0 +1,80 @@
+# DeblurGAN-v2 specific configuration
+# Inherits from base_config.yaml
+
+# Model specific parameters
+model:
+  name: 'deblurgan'
+  use_attention: true
+  use_fpn: true  # Feature Pyramid Network
+  
+  # Generator architecture
+  generator:
+    num_channels: 64
+    num_residual_blocks: 9
+    use_batch_norm: true
+    use_instance_norm: true
+    activation: 'relu'
+    use_double_conv: true  # Double convolution in residual blocks
+    use_attention: true
+    attention_channels: 64
+    
+  # Discriminator architecture
+  discriminator:
+    num_channels: 64
+    num_blocks: 4
+    use_batch_norm: true
+    use_spectral_norm: true
+    activation: 'leaky_relu'
+    patch_size: 70  # PatchGAN discriminator
+    use_global_discriminator: true  # Additional global discriminator
+
+# Training specific parameters
+training:
+  learning_rate: 0.0001
+  beta1: 0.9
+  beta2: 0.999
+  epochs: 100
+  warmup_epochs: 5
+  
+  # Optimizer settings
+  optimizer:
+    type: 'adam'
+    lr_g: 0.0001
+    lr_d: 0.0001
+    weight_decay: 0.0001
+
+# Loss weights specific to DeblurGAN
+loss_weights:
+  adversarial: 0.1
+  content: 1.0
+  perceptual: 0.1
+  gradient_penalty: 10.0
+  feature_matching: 10.0  # Feature matching loss for FPN
+
+# Data specific parameters
+data:
+  degradation_type: 'blur'
+  blur_type: 'gaussian'  # or 'motion', 'defocus'
+  blur_sigma: 1.0
+  blur_range: [0.5, 2.0]  # Range for random blur during training
+  motion_blur_length: [5, 15]  # For motion blur
+  defocus_radius: [1, 3]  # For defocus blur
+
+# Evaluation metrics
+metrics:
+  psnr: true
+  ssim: true
+  lpips: true
+  blur_metric: true  # Custom metric for blur reduction
+
+# Augmentation
+augmentation:
+  use_random_crop: true
+  use_random_flip: true
+  use_color_jitter: true
+  brightness: 0.2
+  contrast: 0.2
+  saturation: 0.2
+  hue: 0.1
+  use_random_rotation: true
+  rotation_degrees: 10 

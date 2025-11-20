@@ -1,0 +1,62 @@
+# SRGAN specific configuration
+# Inherits from base_config.yaml
+
+# Model specific parameters
+model:
+  name: 'srgan'
+  scale_factor: 2  # Upscaling factor
+  num_residual_blocks: 16
+  use_attention: true
+  use_pixel_shuffle: true
+  use_upsample_conv: true
+  
+  # Generator architecture
+  generator:
+    num_channels: 64
+    num_residual_blocks: 16
+    use_batch_norm: true
+    use_pixel_shuffle: true
+    activation: 'prelu'  # or 'relu', 'leaky_relu'
+    
+  # Discriminator architecture
+  discriminator:
+    num_channels: 64
+    num_blocks: 4
+    use_batch_norm: true
+    use_spectral_norm: true
+    activation: 'leaky_relu'
+
+# Training specific parameters
+training:
+  learning_rate: 0.0001
+  beta1: 0.9
+  beta2: 0.999
+  epochs: 100
+  warmup_epochs: 5
+  
+  # Optimizer settings
+  optimizer:
+    type: 'adam'
+    lr_g: 0.0001  # Generator learning rate
+    lr_d: 0.0001  # Discriminator learning rate
+    weight_decay: 0.0001
+
+# Loss weights specific to SRGAN
+loss_weights:
+  adversarial: 0.001
+  content: 1.0
+  perceptual: 0.1
+  pixel: 1.0  # L1 loss weight
+
+# Data specific parameters
+data:
+  degradation_type: 'super_resolution'
+  hr_size: 64  # High resolution size
+  lr_size: 32  # Low resolution size
+  interpolation: 'bicubic'  # or 'bilinear', 'nearest'
+
+# Evaluation metrics
+metrics:
+  psnr: true
+  ssim: true
+  lpips: true  # Learned Perceptual Image Patch Similarity 

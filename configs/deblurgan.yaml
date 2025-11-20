@@ -1,0 +1,46 @@
+model:
+  type: deblurgan
+  name: deblurgan_model
+  num_filters: 64
+  num_residual_blocks: 9
+
+data:
+  data_dir: data/deblurgan
+  image_size: 256
+  num_channels: 3
+  normalize_mean: [0.5, 0.5, 0.5]
+  normalize_std: [0.5, 0.5, 0.5]
+  num_workers: 4
+  use_color_jitter: true
+  
+  # Blur parameters
+  blur_type: gaussian  # Options: gaussian, motion, defocus
+  blur_size: 5        # Kernel size for blur
+
+training:
+  batch_size: 16
+  num_epochs: 20
+  learning_rate: 0.0001
+  beta1: 0.9
+  beta2: 0.999
+  weight_decay: 1e-4
+  metric_to_monitor: psnr
+  save_interval: 5
+  save_best: true
+  metric_for_best: psnr
+  # Learning rate scheduler
+  lr_scheduler:
+    type: cosine
+    warmup_epochs: 5
+
+loss_weights:
+  adversarial: 1e-3
+  content: 1.0
+  perceptual: 1.0
+  gradient_penalty: 10.0
+
+logging:
+  checkpoint_dir: checkpoints
+  log_dir: logs
+
+use_amp: true

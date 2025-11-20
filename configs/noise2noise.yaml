@@ -1,0 +1,46 @@
+model:
+  type: noise2noise
+  name: noise2noise_model
+  num_filters: 64
+  num_residual_blocks: 8
+
+data:
+  data_dir: data/noise2noise
+  image_size: 256
+  num_channels: 3
+  normalize_mean: [0.5, 0.5, 0.5]
+  normalize_std: [0.5, 0.5, 0.5]
+  num_workers: 4
+  use_color_jitter: true
+  
+  # Noise parameters
+  noise_type: gaussian  # Options: gaussian, salt_pepper, poisson
+  noise_level: 0.1     # Noise intensity (0-1)
+
+training:
+  batch_size: 16
+  num_epochs: 20
+  learning_rate: 0.0001
+  beta1: 0.9
+  beta2: 0.999
+  weight_decay: 1e-4
+  metric_to_monitor: psnr
+  save_interval: 5
+  save_best: true
+  metric_for_best: psnr
+  # Learning rate scheduler
+  lr_scheduler:
+    type: cosine
+    warmup_epochs: 5
+
+loss_weights:
+  adversarial: 1e-3
+  content: 1.0
+  perceptual: 1.0
+  l1: 0.1
+
+logging:
+  checkpoint_dir: checkpoints
+  log_dir: logs
+
+use_amp: true

@@ -1,0 +1,98 @@
+# CycleGAN specific configuration for color and contrast enhancement
+# Inherits from base_config.yaml
+
+# Model specific parameters
+model:
+  name: 'cyclegan'
+  use_attention: true
+  
+  # Generator architecture
+  generator:
+    num_channels: 64
+    num_residual_blocks: 9
+    use_batch_norm: true
+    use_instance_norm: true
+    activation: 'relu'
+    use_reflection_padding: true
+    use_attention: true
+    attention_channels: 64
+    
+  # Discriminator architecture
+  discriminator:
+    num_channels: 64
+    num_blocks: 4
+    use_batch_norm: true
+    use_spectral_norm: true
+    activation: 'leaky_relu'
+    patch_size: 70  # PatchGAN discriminator
+    use_global_discriminator: true
+
+# Training specific parameters
+training:
+  learning_rate: 0.0002
+  beta1: 0.5
+  beta2: 0.999
+  epochs: 100
+  warmup_epochs: 5
+  
+  # Optimizer settings
+  optimizer:
+    type: 'adam'
+    lr_g: 0.0002
+    lr_d: 0.0002
+    weight_decay: 0.0001
+    
+  # Learning rate scheduling
+  lr_scheduler:
+    type: 'linear'
+    start_epoch: 50
+    end_epoch: 100
+    start_lr: 0.0002
+    end_lr: 0.0
+
+# Loss weights specific to CycleGAN
+loss_weights:
+  adversarial: 1.0
+  cycle: 10.0
+  identity: 5.0
+  gradient_penalty: 10.0
+  color_consistency: 1.0  # Additional loss for color consistency
+
+# Data specific parameters
+data:
+  degradation_type: 'contrast'
+  contrast_factor: 0.5
+  contrast_range: [0.3, 0.7]  # Range for random contrast during training
+  use_grayscale: false  # Whether to convert to grayscale for training
+  use_color_jitter: true  # Additional color augmentation
+
+# Evaluation metrics
+metrics:
+  psnr: true
+  ssim: true
+  lpips: true
+  color_consistency: true  # Custom metric for color consistency
+  contrast_improvement: true  # Custom metric for contrast improvement
+
+# Augmentation
+augmentation:
+  use_random_crop: true
+  use_random_flip: true
+  use_color_jitter: true
+  brightness: 0.2
+  contrast: 0.2
+  saturation: 0.2
+  hue: 0.1
+  use_random_rotation: true
+  rotation_degrees: 10
+  use_random_erasing: true
+  erasing_prob: 0.5
+
+# CycleGAN specific parameters
+cyclegan:
+  use_identity_loss: true
+  use_cycle_consistency: true
+  use_feature_matching: true
+  use_style_loss: true
+  style_weight: 1.0
+  content_weight: 1.0 
